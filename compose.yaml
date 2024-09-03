@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: speck-frontend
+    image: frontend
+    build:
+      context: ./speck-frontend
+      dockerfile: frontend.dockerfile
+      target: dev
+    command: pnpm dev
+    ports:
+      - 3000:3000
+    volumes:
+       - ./speck-frontend:/app
+       - /app/node_modules
+       - /app/.next
+      #  - ./speck-frontend/.next/cache/webpack:/app/.next/cache/webpack  
+    # environment:
+    #   - ./speck-frontend/.env
+    environment:
+      - NODE_ENV=development 
+      - NEXT_PUBLIC_SERVER_API=http://backend:4000
+    depends_on:
+      - backend
+
+  backend:
+    depends_on:
+      db:
+        condition: service_healthy
+    container_name: speck-backend
+    image: backend
+    build:
+      context: ./speck-backend
+      dockerfile: backend.dockerfile
+    ports:
+      - 4000:4000
+      - 5555:5555
+    environment: 
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
+    # env_file:
+    #   - .env
+    volumes:
+      - ./speck-backend:/app
+    #   - ./.env:/app/.env
+
+  db:
+      container_name: speck-db
+      image: postgres:12
+      restart: always
+      env_file:
+        - ./speck-backend/.env
+      ports:
+        - 5432:5432
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+volumes:
+  pgdata: {}
