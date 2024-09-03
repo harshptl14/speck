@@ -1,0 +1,6 @@
+[submodule "speck-frontend"]
+	path = speck-frontend
+	url = https://github.com/harshptl14/speck-frontend.git
+[submodule "speck-backend"]
+	path = speck-backend
+	url = https://github.com/harshptl14/speck-backend.git
