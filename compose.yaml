@@ -21,6 +21,7 @@ services:
     environment:
       - NODE_ENV=development 
       - NEXT_PUBLIC_SERVER_API=http://backend:4000
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - backend
 
@@ -43,6 +44,11 @@ services:
     volumes:
       - ./speck-backend:/app
     #   - ./.env:/app/.env
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
 
   db:
       container_name: speck-db
