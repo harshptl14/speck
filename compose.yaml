@@ -36,7 +36,6 @@ services:
       dockerfile: backend.dockerfile
     ports:
       - 4000:4000
-      - 5000:5000
       - 5555:5555
     environment: 
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
@@ -44,6 +43,7 @@ services:
     #   - .env
     volumes:
       - ./speck-backend:/app
+      - /app/node_modules
     #   - ./.env:/app/.env
 
   redis:
